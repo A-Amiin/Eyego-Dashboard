@@ -19,30 +19,35 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-export const registerWithEmail = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+export const registerWithEmail = async (email, password) => {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        return { uid: userCredential.user.uid, email: userCredential.user.email };
+    } catch (error) {
+        console.error("Registration error:", error.message);
+        throw new Error(error.message);
+    }
 };
 
 export const loginWithEmail = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("User logged in:", userCredential.user);
-        return userCredential;
+        const user = userCredential.user;
+        return { uid: user.uid, email: user.email, token: await user.getIdToken() };
     } catch (error) {
         console.error("Login error:", error.message);
-        throw error;
+        throw new Error("Invalid email or password");
     }
 };
 
-export const logout = async () => {
+export const logoutUser = async () => {
     try {
         await signOut(auth);
-        console.log("User logged out");
+        console.log("User logged out successfully");
     } catch (error) {
         console.error("Logout error:", error.message);
-        throw error;
+        throw new Error(error.message);
     }
 };
-
-export const db = getFirestore(app);

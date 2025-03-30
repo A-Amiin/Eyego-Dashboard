@@ -1,5 +1,5 @@
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "./firebase"; // تأكد من أن db يأتي من firebase.js
+import { db } from "./firebase";
 
 export async function getProducts() {
     if (!db) {
