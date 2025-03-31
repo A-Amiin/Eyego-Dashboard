@@ -19,7 +19,7 @@ const Login = () => {
         dispatch(loginUser({ email, password }))
             .unwrap()
             .then(() => {
-                router.push("/");
+                router.push("/dashboard");
             })
             .catch(() => { });
     };

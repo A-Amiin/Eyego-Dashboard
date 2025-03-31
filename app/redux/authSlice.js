@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginWithEmail, logoutUser as firebaseLogout } from "../firebase/firebase";
+import { persistor } from "./store";
 
 export const loginUser = createAsyncThunk("auth/loginUser", async ({ email, password }, { rejectWithValue }) => {
     try {
@@ -13,12 +14,12 @@ export const loginUser = createAsyncThunk("auth/loginUser", async ({ email, pass
 export const logoutUser = createAsyncThunk("auth/logoutUser", async (_, { rejectWithValue }) => {
     try {
         await firebaseLogout();
+        await persistor.purge(); // This will now work since persistor is imported
         return null;
     } catch (error) {
         return rejectWithValue(error.message);
     }
 });
-
 
 const authSlice = createSlice({
     name: "auth",
@@ -28,7 +29,15 @@ const authSlice = createSlice({
         loading: false,
         error: null,
     },
-    reducers: {},
+    reducers: {
+        // Add a manual reset action as a fallback
+        resetAuth: (state) => {
+            state.user = null;
+            state.token = null;
+            state.loading = false;
+            state.error = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(loginUser.pending, (state) => {
@@ -47,8 +56,10 @@ const authSlice = createSlice({
             .addCase(logoutUser.fulfilled, (state) => {
                 state.user = null;
                 state.token = null;
+                state.error = null;
             });
     },
 });
 
+export const { resetAuth } = authSlice.actions;
 export default authSlice.reducer;

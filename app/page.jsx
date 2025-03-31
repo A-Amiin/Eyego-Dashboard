@@ -1,38 +1,73 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Login from "../app/login/page";
-import Product from "../app/components/product";
 import { auth } from "./firebase/firebase";
-import { logoutUser } from "./redux/authSlice";
-import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default function Home() {
   const [isLogin, setIsLogin] = useState(false);
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLogin(!!user);
-    });
+    // Check for token in localStorage
+    const checkAuth = () => {
+      try {
+        // Check if we have auth data in localStorage (from redux-persist)
+        const persistedAuth = localStorage.getItem("persist:root");
 
-    return () => unsubscribe();
-  }, []);
+        if (persistedAuth) {
+          const parsedAuth = JSON.parse(persistedAuth);
+
+          // Check if we have auth data with a token
+          if (parsedAuth.auth) {
+            const authData = JSON.parse(parsedAuth.auth);
+            if (authData.token) {
+              setIsLogin(true);
+              // Redirect to dashboard if token exists
+              router.push("/dashboard");
+              return;
+            }
+          }
+        }
+
+        // Fallback to Firebase auth check
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          setIsLogin(!!user);
+          if (user) {
+            // Redirect to dashboard if authenticated via Firebase
+            router.push("/dashboard");
+          }
+          setLoading(false);
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Auth check error:", error);
+        setIsLogin(false);
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <main className="flex flex-col items-center justify-center min-h-screen">
+        <p>Loading...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen">
       {isLogin ? (
         <>
           <h1>Hi There</h1>
-          <p>Welcome</p>
-          <Product />
-          <button
-            onClick={() => dispatch(logoutUser())}
-            className="bg-red-500 text-white px-4 py-2 rounded"
-          >
-            Sign Out
-          </button>
+          <p>Welcome to Home page Pls Enter "/dashboard" for the tab to access the dashboard page</p>
         </>
       ) : (
         <Login />
@@ -40,4 +75,3 @@ export default function Home() {
     </main>
   );
 }
-
