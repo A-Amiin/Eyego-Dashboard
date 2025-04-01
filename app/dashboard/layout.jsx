@@ -29,15 +29,15 @@ export default function DashboardLayout({ children }) {
             {/* Overlay for mobile when sidebar is open */}
             {isSidebarOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-10"
+                    className="md:hidden fixed inset-0 bg-opacity-50 z-10"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* Sidebar */}
-            <div className={`bg-gray-800 text-white fixed md:static transition-transform duration-300 z-20
-        ${isSidebarOpen ? "translate-x-0 w-64" : "-translate-x-full w-0 md:w-64 md:translate-x-0"} 
-        h-screen flex flex-col`}>
+            <div className={`overflow-hidden md-h-auto bg-gray-800 text-white fixed md:static transition-transform duration-300 z-20
+        ${isSidebarOpen ? "translate-x-0 w-64 translate-y-12" : "-translate-x-full w-0 md:w-64 md:translate-x-0"} 
+        flex flex-col`}>
 
                 {/* Dashboard title */}
                 <h2 className="text-xl font-bold p-4">Dashboard</h2>

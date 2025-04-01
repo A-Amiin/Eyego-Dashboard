@@ -13,7 +13,7 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
     reducer: {
-        auth: persistedAuthReducer,
+        auth: persistedAuthReducer, // ✅ Persisted reducer
         data: dataReducer,
     },
     middleware: (getDefaultMiddleware) =>

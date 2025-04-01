@@ -1,11 +1,13 @@
 "use client";
 
 import Products from "../components/product";
-
+import ProtectedRoute from "../components/protectedRoute"
 export default function Dashboard() {
     return (
-        <div>
-            <Products />
-        </div>
+        <ProtectedRoute>
+            <div>
+                <Products />
+            </div>
+        </ProtectedRoute>
     );
 }

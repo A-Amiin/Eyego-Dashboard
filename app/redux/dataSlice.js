@@ -15,7 +15,7 @@ export const fetchData = createAsyncThunk("data/fetchData", async (_, { rejectWi
 const dataSlice = createSlice({
     name: "data",
     initialState: {
-        data: [],  // ✨ غيرنا items إلى data علشان يكون متوافق مع الـ useSelector
+        data: [],
         loading: false,
         error: null,
     },
@@ -28,7 +28,7 @@ const dataSlice = createSlice({
             })
             .addCase(fetchData.fulfilled, (state, action) => {
                 state.loading = false;
-                state.data = action.payload; // ✨ تحديث البيانات
+                state.data = action.payload;
             })
             .addCase(fetchData.rejected, (state, action) => {
                 state.loading = false;
