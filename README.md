@@ -97,18 +97,4 @@ To get started with this project, follow the steps below:
 - [Firebase Documentation](https://firebase.google.com/docs) for backend and authentication setup.
 - [Charting Library Documentation] - if available, to explain the charts implementation (if you are using a specific charting library, such as Chart.js, Recharts, etc.).
 
-<<<<<<< HEAD
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Eyego-Dashboard
-=======
 Feel free to reach out if you have any questions or suggestions! 😊
->>>>>>> 35c01c9696429373f87f0dc94b0363f7a10b11ea
