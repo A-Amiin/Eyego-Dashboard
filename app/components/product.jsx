@@ -125,7 +125,7 @@ export default function Product() {
                                         <td className="py-4 text-center text-gray-800">${typeof item.price === 'number' ? item.price.toFixed(2) : '0.00'}</td>
                                         <td className="py-4 text-center text-gray-800">{safeRender(item.totalSales) || 0}</td>
                                         <td className="text-center py-4 text-gray-500">{safeRender(item.createdAt) || "N/A"}</td>
-                                        <td className="text-center py-4 pl-4 text-right">
+                                        <td className="text-center py-4 pl-4">
                                             <button className="cursor-pointer text-gray-400 hover:text-gray-600">
                                                 •••
                                             </button>
