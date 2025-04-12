@@ -1,31 +1,31 @@
-import Module from "../components/Modal";
+import Modal from "../components/Modal";
 
-const ItemModal = ({ isOpen }) => {
-    const rows = ["Name", "Price", "Status", "Description"];
+const ItemModal = ({ children }) => {
+  const rows = ["Name", "Price", "Status", "Description"];
 
-    if (!isOpen) return null;
-    return (
-        <Module>
-            <h1>Add new item</h1>
-            {rows.map((row, i) => (
-                <input
-                    key={i}
-                    placeholder={`Enter The ${row}`}
-                    type="text"
-                    onChange={(e) => handleChange(i, e.target.value)}
-                    className="bg-white w-full p-2 rounded-md mb-2"
-                />
-            ))}
-            <div className="flex justify-center mt-4">
-                <button
-                    type="submit"
-                    className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded"
-                >
-                    ADD
-                </button>
-            </div>
-        </Module>
-    )
-}
+  return (
+    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-2">
+      {children}
+      <h1 className="text-2xl text-[#444444] font-bold m-2 ">Add new item</h1>
+      {rows.map((row, i) => (
+        <label key={i} className="text-[#444444] font-bold flex flex-col ">
+          <span className="ml-1 font-medium text-[#656565]"> {row}</span>
+          <input
+            key={i}
+            placeholder={row}
+            type="text"
+            className="bg-white placeholder:text-sm  w-full p-2 rounded-md border pl-4  border-gray-300 focus:outline-none focus:border-[#5FB562] transition"
+          />
+        </label>
+      ))}
+      <button
+        type="submit"
+        className="bg-[#5FB562] hover:bg-[#4a884c] text-white font-bold py-2 px-6 rounded w-full transition "
+      >
+        ADD
+      </button>
+    </form>
+  );
+};
 
-export default ItemModal
+export default ItemModal;
