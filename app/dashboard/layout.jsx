@@ -1,117 +1,60 @@
 "use client";
-import { useState } from "react";
-import { Home, BarChart2, Menu, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 import { logoutUser } from "../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import Aside from "../components/Aside";
+import Navbar from "../components/Navbar";
 
 export default function DashboardLayout({ children }) {
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-    const dispatch = useDispatch();
-    const authState = useSelector((state) => state.auth);
-    const router = useRouter();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const dispatch = useDispatch();
+  const authState = useSelector((state) => state.auth);
+  const router = useRouter();
 
-    const handleLogout = async () => {
-        try {
-            console.log("Before Logout:", authState);
-            await dispatch(logoutUser());
-            localStorage.removeItem('persist:root');
-            localStorage.clear();
-            router.push("/");
-        } catch (error) {
-            dispatch(resetAuth());
-            router.push("/");
-        }
+  const handleLogout = async () => {
+    try {
+      console.log("Before Logout:", authState);
+      dispatch(logoutUser());
+      localStorage.removeItem("persist:root");
+      localStorage.clear();
+      router.push("/");
+    } catch (error) {
+      dispatch(resetAuth());
+      router.push("/");
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(false);
+      }
     };
 
-    return (
-        <div className="flex min-h-screen">
-            {/* Overlay for mobile when sidebar is open */}
-            {isSidebarOpen && (
-                <div
-                    className="md:hidden fixed inset-0 bg-opacity-50 z-10"
-                    onClick={() => setSidebarOpen(false)}
-                />
-            )}
+    window.addEventListener("resize", handleResize);
 
-            {/* Sidebar */}
-            <div className={`overflow-hidden md-h-auto bg-gray-800 text-white fixed md:static transition-transform duration-300 z-20
-        ${isSidebarOpen ? "translate-x-0 w-64 translate-y-12" : "-translate-x-full w-0 md:w-64 md:translate-x-0"} 
-        flex flex-col`}>
+    // Run once on mount in case user opens on a large screen
+    handleResize();
 
-                {/* Dashboard title */}
-                <h2 className="text-xl font-bold p-4">Dashboard</h2>
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-                {/* Navigation items (at the top) */}
-                <nav className="flex-grow-0">
-                    <ul className="space-y-2 p-4 pt-0">
-                        <li>
-                            <a href="/dashboard" className="flex items-center px-4 py-2 rounded hover:bg-gray-700">
-                                <Home className="w-5 h-5 mr-2" />
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/dashboard/charts" className="flex items-center px-4 py-2 rounded hover:bg-gray-700">
-                                <BarChart2 className="w-5 h-5 mr-2" />
-                                Charts
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+  return (
+    <div className="flex min-h-screen bg-[#F1F5F9] p-2">
+      {isSidebarOpen ? (
+        <div
+          className="md:hidden fixed inset-0 bg-opacity-50 z-10"
+          onClick={() => setSidebarOpen(false)}
+        />
+      ) : null}
 
-                {/* Spacer to push logout button to bottom */}
-                <div className="flex-grow"></div>
+      <Aside isSidebarOpen={isSidebarOpen} handleLogout={handleLogout} />
 
-                {/* Logout button (at the bottom) */}
-                <div className="p-4 mt-auto">
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center px-4 py-2 rounded hover:bg-gray-700 w-full"
-                    >
-                        <LogOut className="w-5 h-5 mr-2" />
-                        Sign Out
-                    </button>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col">
-                <header className="bg-white shadow px-8 py-4 flex justify-between items-center sticky top-0 z-10">
-                    <button className="md:hidden text-gray-700" onClick={() => setSidebarOpen(!isSidebarOpen)}>
-                        <Menu className="w-6 h-6" />
-                    </button>
-
-                    <h1 className="text-xl font-semibold">Dashboard</h1>
-
-                    {/* User dropdown */}
-                    <div className="relative">
-                        <button
-                            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none"
-                            onClick={() => setUserDropdownOpen((prev) => !prev)}
-                        >
-                            <img
-                                src="./default-avatar.jpg"
-                                alt="User"
-                                className="w-8 h-8 rounded-full"
-                            />
-                        </button>
-
-                        {userDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-50">
-                                <button
-                                    onClick={handleLogout}
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                                >
-                                    Logout
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </header>
-                <main className="p-3 flex-1">{children}</main>
-            </div>
-        </div>
-    );
+      <div className="flex-1 flex flex-col">
+        <Navbar handleLogout={handleLogout} setSidebarOpen={setSidebarOpen} />
+        <main className="p-3 flex-1">{children}</main>
+      </div>
+    </div>
+  );
 }
